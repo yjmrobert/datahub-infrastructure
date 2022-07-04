@@ -1,9 +1,14 @@
 
 param(
+    [Parameter(Mandatory=$true)]
     $Environment       = "dev",
+    [Parameter(Mandatory=$true)]
     $Location          = "Canada Central", 
-    $TemplateName      = "state",
+    [Parameter(Mandatory=$true)]
+    $TemplateName,
+    [Parameter(Mandatory=$true)]
     $TemplatePath      = "$PSScriptRoot\..\terraform\templates\$TemplateName",
+    [Parameter(Mandatory=$true)]
     $DestinationPath   = "$PSScriptRoot\..\terraform\$Environment\$TemplateName"
 )
 function ConvertTo-StringData {
@@ -22,7 +27,7 @@ function ConvertTo-StringData {
 }
 
 # ==============================================================================
-# Copy the Terraform files to the state location
+# Copy the Terraform files to the destination
 # ==============================================================================
 
 # Check if the files are already there
@@ -35,14 +40,13 @@ if (Test-Path -Path $DestinationPath) {
     Copy-Item -Path $TemplatePath -Destination $DestinationPath -Recurse -Force
 }
 
-# Create the terraform.tfvars file with the following format
+# Create the terraform.tfvars file
 Write-Output "Creating terraform.tfvars file from mapped values"
 $TerraformVars = @{
     "environment" = $Environment;
     "location" = $Location;
 }
-
-($TerraformVars | ConvertTo-StringData) | Out-File "$DestinationPath\terraform.tfvars" -Force
+($TerraformVars | ConvertTo-StringData) | Out-File "$DestinationPath\terraform.tfvars" -Force -Encoding utf8
 
 
 
