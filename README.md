@@ -3,8 +3,9 @@
 
 ## Getting Started
 
-### Create New Environment
+### New Environment
 
-1. Run the `/env/state` with your variables to launch the remote state container for your environment's terraform states
+To setup a environment's state run `.\scripts\setup_environment_state -Environment <name>`
 
-1. Copy portal template into your environment portal folder
+To tear down an environment's state run `.\scripts\teardown_environment_state -Environment <name>`
+> _Note: this will also delete the environment's state folder_
