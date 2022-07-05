@@ -18,12 +18,12 @@ resource "random_string" "resource_code" {
 }
 
 resource "azurerm_resource_group" "tfstate" {
-  name     = "${var.environment}-tfstate"
-  location = "Canada Central"
+  name     = "${var.prefix}-${var.environment}-tfstate"
+  location = "${var.location}"
 
   tags = {
     environment = "${var.environment}"
-    project = "datahub state"
+    project = "DataHub State"
   }
 }
 
@@ -44,4 +44,15 @@ resource "azurerm_storage_container" "tfstate" {
   name                  = "tfstate"
   storage_account_name  = azurerm_storage_account.tfstate.name
   container_access_type = "blob"
+}
+
+
+# Save the storage account details to a file for later reference in scripts
+resource "local_file" "output" {
+  content = <<EOT
+  storage_account_name = ${azurerm_storage_account.tfstate.name}
+  resource_group_name = ${azurerm_storage_account.tfstate.resource_group_name}
+  container_name = ${azurerm_storage_container.tfstate.name}
+  EOT
+  filename = "${path.module}/storage_account.values"
 }
