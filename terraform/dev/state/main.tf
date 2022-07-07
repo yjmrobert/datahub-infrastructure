@@ -23,7 +23,7 @@ resource "azurerm_resource_group" "tfstate" {
 
   tags = {
     environment = "${var.environment}"
-    project = "datahub state"
+    project     = "datahub state"
   }
 }
 

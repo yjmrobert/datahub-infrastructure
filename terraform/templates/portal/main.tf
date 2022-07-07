@@ -16,10 +16,10 @@ provider "azurerm" {
 
 resource "azurerm_resource_group" "portal-rg" {
   name     = "${var.prefix}-${var.environment}-portal"
-  location = "${var.location}"
+  location = var.location
 
   tags = {
     environment = "${var.environment}"
-    project = "datahub portal"
+    project     = "datahub portal"
   }
 }

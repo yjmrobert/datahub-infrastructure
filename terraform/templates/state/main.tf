@@ -19,11 +19,11 @@ resource "random_string" "resource_code" {
 
 resource "azurerm_resource_group" "tfstate" {
   name     = "${var.prefix}-${var.environment}-tfstate"
-  location = "${var.location}"
+  location = var.location
 
   tags = {
     environment = "${var.environment}"
-    project = "DataHub State"
+    project     = "DataHub State"
   }
 }
 
@@ -49,7 +49,7 @@ resource "azurerm_storage_container" "tfstate" {
 
 # Save the storage account details to a file for later reference in scripts
 resource "local_file" "output" {
-  content = <<EOT
+  content  = <<EOT
   storage_account_name = ${azurerm_storage_account.tfstate.name}
   resource_group_name = ${azurerm_storage_account.tfstate.resource_group_name}
   container_name = ${azurerm_storage_container.tfstate.name}
