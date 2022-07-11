@@ -1,0 +1,3 @@
+  storage_account_name = tfstateft9r6
+  resource_group_name = dh-test-tfstate
+  container_name = tfstate

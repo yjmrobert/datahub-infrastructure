@@ -1,21 +1,30 @@
 # DataHub Infrastructure
 
+## Prerequisites
+
+The following needs to be installed before running anything
+
+- Terraform
+- Powershell
+- Azure CLI
 
 ## Getting Started
 
-### New Environment
+### Setup Environment
 
-To setup a environment's state run `.\scripts\setup_environment_state -Environment <name>`
+To setup a environment's state run
 
-To tear down an environment's state run `.\scripts\teardown_environment_state -Environment <name>`
-> _Note: this will also delete the environment's state folder_
+```ps
+.\scripts\environment\state.ps1 -Environment <name>
+```
 
+To tear down an environment's state run the same command with the `-Destroy` flag
 
+## TODO: Prototype scripts
 
-## Todo
-
-- [ ] spin up/down environments
-- [ ] spin up/down portal
+- [x] spin up/down environments
+- [x] spin up/down portal
+- [ ] spin up/down project
 - [ ] spin up/down features
-    - [ ] spin up/down azure storage containers
-    - [ ] spin up/down azure databricks
+  - [ ] spin up/down azure storage containers
+  - [ ] spin up/down azure databricks
