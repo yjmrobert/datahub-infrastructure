@@ -13,7 +13,8 @@ function Copy-Terraform-Template {
         [Parameter(Mandatory = $true)]
         $TemplatePath,
         [Parameter(Mandatory = $true)]
-        $DestinationPath
+        $DestinationPath,
+        [hashtable]$TerraformVars
     )
 
     . $PSScriptRoot\convert_to_string_data.ps1
@@ -30,10 +31,15 @@ function Copy-Terraform-Template {
     }
 
     # Create the terraform.tfvars file
-    Write-Output "Creating terraform.tfvars file from mapped values"
-    $TerraformVars = @{
-        "environment" = $Environment;
-        "location"    = $Location;
+    if ($TerraformVars) {
+        Write-Output "Creating terraform.tfvars file from mapped values"
+    }
+    else {
+        Write-Output "Creating terraform.tfvars file from default values"
+        $TerraformVars = @{
+            "environment" = $Environment;
+            "location"    = $Location;
+        }
     }
     ($TerraformVars | ConvertTo-StringData) | Out-File "$DestinationPath\terraform.tfvars" -Force -Encoding utf8
 }
