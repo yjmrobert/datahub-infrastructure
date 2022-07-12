@@ -8,7 +8,7 @@ param(
     
 $TemplateName = "state";
 $ProjectRoot = "$PSScriptRoot\..\..";
-$TemplatePath = "$ProjectRoot\terraform\templates\$TemplateName";
+$TemplatePath = "$ProjectRoot\templates\$TemplateName";
 $DestinationPath = "$ProjectRoot\terraform\$Environment\$TemplateName";
 
 . $ProjectRoot\scripts\utils\copy_tf_template.ps1
@@ -20,7 +20,7 @@ if (!$Destroy) {
 
     # Check if the destination path already exists
     if (Test-Path -d $DestinationPath) {
-        Write-Output "The environment state already exists. Please destroy it before running this script."
+        Write-Output "The environment state already exists at $DestinationPath. Please destroy it before running this script."
         exit 1
     }
 

@@ -9,7 +9,7 @@ param(
     
 $TemplateName = "project"
 $ProjectRoot = "$PSScriptRoot\..\..";
-$TemplatePath = "$ProjectRoot\terraform\templates\$TemplateName";
+$TemplatePath = "$ProjectRoot\templates\$TemplateName";
 $DestinationPath = "$ProjectRoot\terraform\$Environment\projects\$ProjectAcronym";
 $PathToStateStorageValues = "$DestinationPath\..\..\state\storage_account.values"
 
@@ -64,11 +64,11 @@ if (!$Destroy) {
             "key"                  = "$Environment.$TemplateName.$ProjectAcronym.tfstate";
         }
     
-        Write-Output "Creating terraform backend configuration file";
+        Write-Output "Creating terraform backend configuration file at $DestinationPath\$TemplateName.backend";
         ($TerraformBackend | ConvertTo-StringData) | Out-File "$DestinationPath\$TemplateName.backend" -Force -Encoding utf8;
         
         # Run the terraform plan and apply scripts
-        Write-Output "Running terraform init, plan, and apply"
+        Write-Output "Running terraform init, plan, and apply with backend config at $DestinationPath\$TemplateName.backend";
         terraform -chdir="$DestinationPath" init -backend-config="$DestinationPath\$TemplateName.backend"
         terraform -chdir="$DestinationPath" plan -out="$DestinationPath\plan.out"
         terraform -chdir="$DestinationPath" apply "$DestinationPath\plan.out"
@@ -92,13 +92,13 @@ else {
 
     try {
         # Run the terraform plan and apply (destroy) scripts
-        Write-Output "Running terraform init, plan, and destroy"
+        Write-Output "Running terraform init, plan, and destroy wit backend config at $DestinationPath\$TemplateName.backend";
         terraform -chdir="$DestinationPath" init -backend-config="$DestinationPath\$TemplateName.backend"
         terraform -chdir="$DestinationPath" plan -destroy -out="$DestinationPath\destroy-plan.out"
         terraform -chdir="$DestinationPath" apply "$DestinationPath\destroy-plan.out"
     
         # Clean up and delete the directory
-        Write-Output "Cleaning up directory"
+        Write-Output "Cleaning up directory at $DestinationPath";
         Remove-Item -Path "$DestinationPath" -Force -Recurse -ErrorAction SilentlyContinue
     }
     catch {
