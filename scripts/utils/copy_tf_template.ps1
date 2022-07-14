@@ -14,23 +14,38 @@ function Copy-Terraform-Template {
         $TemplatePath,
         [Parameter(Mandatory = $true)]
         $DestinationPath,
+        $FilesOnly = $false,
         [hashtable]$TerraformVars
     )
 
     . $PSScriptRoot\convert_to_string_data.ps1
+    . $PSScriptRoot\merge_hashtables.ps1
 
-    # Check if the files are already there
-    if (Test-Path -Path $DestinationPath) {
-        Write-Output "Terraform folder for [$TemplateName] template already exist in [$Environment] environment"
-        # Exit the script
-        Exit 0
+
+    # If it's just the files in the template to copy
+    if ($FilesOnly) {
+
+        # Make sure the folder is there
+        if (Test-Path -Path $DestinationPath) {
+            # Copy the files from the template
+            Write-Output "Copying $TemplateName files into $DestinationPath"
+            Copy-Item -Path "$TemplatePath\*" -Destination $DestinationPath -Recurse -Force
+        }
     }
     else {
-        Write-Output "Copying terraform files into [$Environment/$TemplateName] environment"
-        Copy-Item -Path $TemplatePath -Destination $DestinationPath -Recurse -Force
+        # Check if the folder is already there
+        if (Test-Path -Path $DestinationPath) {
+            Write-Output "Terraform folder for [$TemplateName] template already exist in [$Environment] environment"
+            # Exit the script
+            Exit 0
+        }
+        else {
+            Write-Output "Copying terraform files into [$Environment/$TemplateName] environment"
+            Copy-Item -Path $TemplatePath -Destination $DestinationPath -Recurse -Force
+        }
     }
 
-    # Create the terraform.tfvars file
+    # Create or update the terraform.tfvars file
     if ($TerraformVars) {
         Write-Output "Creating terraform.tfvars file from mapped values"
     }
@@ -41,5 +56,15 @@ function Copy-Terraform-Template {
             "location"    = $Location;
         }
     }
-    ($TerraformVars | ConvertTo-StringData) | Out-File "$DestinationPath\terraform.tfvars" -Force -Encoding utf8
+
+    $TerraformVarsFile = "$DestinationPath\terraform.tfvars"
+
+    if (Test-Path -Path $TerraformVarsFile) {
+        Write-Output "Terraform variables file already exist in $DestinationPath, merging with new values"
+        # Read in the existing terraform.tfvars file string data
+        $ExistingTerraformVars = Get-Content $TerraformVarsFile | ForEach-Object { $_ -replace '"', '' } | Out-String | ConvertFrom-StringData
+        $TerraformVars = Merge-Hashtables -Default $ExistingTerraformVars -Uppend $TerraformVars
+    }
+    ($TerraformVars | ConvertTo-StringData) | Out-File "$TerraformVarsFile" -Force -Encoding utf8
 }
+

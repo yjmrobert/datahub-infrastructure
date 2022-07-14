@@ -1,4 +1,7 @@
-function ConvertTo-StringData {
+# ==============================================================================
+# Converts a hashtable to a string of key=value pairs.
+# ==============================================================================
+Function ConvertTo-StringData {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory, Position = 0, ValueFromPipeline)]

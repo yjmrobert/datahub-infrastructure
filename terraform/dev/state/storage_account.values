@@ -1,0 +1,3 @@
+  storage_account_name = tfstateuuz3q
+  resource_group_name = dh-dev-tfstate
+  container_name = tfstate
