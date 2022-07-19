@@ -34,6 +34,13 @@ To create a new project, run the following command:
 
 > _Note: to destroy the project, append the `-Destroy` flag to the command_
 
+## Deploying a Project
+
+1. Deploy environment infrastructure
+2. Deploy portal infrastructure
+3. Deploy project infrastructure
+4. Deploy project resources
+
 ## TODO: Prototype scripts
 
 - [x] spin up/down environments
