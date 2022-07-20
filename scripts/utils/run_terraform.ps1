@@ -34,13 +34,17 @@ if (!$Destroy) {
         # Run the terraform plan and apply scripts
         if ($null -ne $BackendConfig) {
             Write-Information "Running terraform init, plan, and apply with backend config at $BackendConfig";
-            terraform -chdir="$DestinationPath" init -backend-config="$BackendConfig"
+            terraform -chdir="$DestinationPath" init -backend-config="$BackendConfig" | Write-Information
         }
         else {
-            terraform -chdir="$DestinationPath" init
+            Write-Information "Running terraform init";
+            terraform -chdir="$DestinationPath" init | Write-Information
         }
-        terraform -chdir="$DestinationPath" plan -out="$DestinationPath\apply-plan.out"
-        terraform -chdir="$DestinationPath" apply "$DestinationPath\apply-plan.out"
+        Write-Information "Running terraform plan";
+        terraform -chdir="$DestinationPath" plan -out="$DestinationPath\apply-plan.out" | Write-Information
+        Write-Information "Running terraform apply";
+        terraform -chdir="$DestinationPath" apply "$DestinationPath\apply-plan.out" | Write-Information
+        Write-Information "Successfully applied terraform configuration";
     }
     catch {
         Write-Information "Error applying terraform plan and apply scripts";
