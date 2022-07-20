@@ -50,11 +50,9 @@ resource "azurerm_storage_container" "tfstate" {
 # Save the storage account details to a file for later reference in scripts
 resource "local_file" "output" {
   content  = <<EOT
-  {
-    "resourceGroupName": "${azurerm_storage_account.tfstate.resource_group_name}",
-    "storageAccountName": "${azurerm_storage_account.tfstate.name}",
-    "storageContainerName": "${azurerm_storage_container.tfstate.name}"
-  }
+  storage_account_name = ${azurerm_storage_account.tfstate.name}
+  resource_group_name = ${azurerm_storage_account.tfstate.resource_group_name}
+  container_name = ${azurerm_storage_container.tfstate.name}
   EOT
-  filename = "${path.module}/storage_account_values.json"
+  filename = "${path.module}/storage_account.values"
 }
