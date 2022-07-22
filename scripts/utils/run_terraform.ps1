@@ -41,9 +41,11 @@ if (!$Destroy) {
             terraform -chdir="$DestinationPath" init | Write-Information
         }
         Write-Information "Running terraform plan";
-        terraform -chdir="$DestinationPath" plan -out="$DestinationPath\apply-plan.out" | Write-Information
+        terraform -chdir="$DestinationPath" plan -out="apply.tfplan" | Write-Information
+        
         Write-Information "Running terraform apply";
-        terraform -chdir="$DestinationPath" apply "$DestinationPath\apply-plan.out" | Write-Information
+        terraform -chdir="$DestinationPath" apply "apply.tfplan" | Write-Information
+        
         Write-Information "Successfully applied terraform configuration";
     }
     catch {
@@ -60,13 +62,18 @@ else {
         # Run the terraform plan and apply (destroy) scripts
         if ($null -ne $BackendConfig) {
             Write-Information "Running terraform init, plan, and apply (destroy) with backend config at $BackendConfig";
-            terraform -chdir="$DestinationPath" init -backend-config="$BackendConfig"
+            terraform -chdir="$DestinationPath" init -backend-config="$BackendConfig" | Write-Information
         }
         else {
-            terraform -chdir="$DestinationPath" init
+            Write-Information "Running terraform init";
+            terraform -chdir="$DestinationPath" init | Write-Information
         }
-        terraform -chdir="$DestinationPath" plan -destroy -out="$DestinationPath\destroy-plan.out"
-        terraform -chdir="$DestinationPath" apply "$DestinationPath\destroy-plan.out"
+        
+        Write-Information "Running terraform plan";
+        terraform -chdir="$DestinationPath" plan -destroy -out="destroy-plan.tfplan"
+        
+        Write-Information "Running terraform apply (destroy)";
+        terraform -chdir="$DestinationPath" apply "destroy-plan.tfplan"
         
         # Clean up and delete the directory
         Write-Information "Cleaning up directory at $DestinationPath";
