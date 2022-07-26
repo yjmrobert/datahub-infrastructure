@@ -1,0 +1,3 @@
+  storage_account_name = tfstate3s1qg
+  resource_group_name = dh-octo-9522-tfstate
+  container_name = tfstate
